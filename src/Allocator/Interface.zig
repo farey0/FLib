@@ -22,7 +22,7 @@ pub fn AllocateArray(self: Self, comptime Type: type, size: usize) Error![]Type 
 }
 
 pub fn AllocateOne(self: Self, comptime Type: type) Error!*Type {
-    return try self.stdAllocator.create(type);
+    return try self.stdAllocator.create(Type);
 }
 
 pub fn Reallocate(self: Self, pointer: anytype, size: usize) t: {

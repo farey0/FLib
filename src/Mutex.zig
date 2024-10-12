@@ -1,4 +1,4 @@
-//! FLib
+//! FLib.Mutex
 //! Author : farey0
 //!
 //! std's mutex functions but in upper camel case

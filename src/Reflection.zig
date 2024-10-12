@@ -6,7 +6,7 @@
 //                               ----------------   Declarations   ----------------
 
 const Self = @This();
-const Memory = @import("Memory/Memory.zig");
+const Memory = @import("Memory.zig");
 
 //                               ----------------      Public      ----------------
 
@@ -21,16 +21,16 @@ pub fn Compare(value1: anytype, value2: anytype) bool {
     const TypeInfo = @typeInfo(@TypeOf(value1));
 
     switch (TypeInfo) {
-        .Int, .Bool, .Enum, .Float, .Pointer, .ComptimeInt, .ComptimeFloat => {
+        .int, .bool, .@"enum", .float, .pointer, .comptime_int, .comptime_float => {
             return value1 == value2;
         },
-        .Array => {
+        .array => {
             return Memory.Compare(TypeInfo.Array.child, value1, value2);
         },
-        .Struct => {
+        .@"struct" => {
             return Struct.Compare(value1, value2);
         },
-        .Optional => {
+        .optional => {
             return Optional.Compare(value1, value2);
         },
         else => @compileError("Unimplemented type : " ++ @typeName(@TypeOf(value1))),
@@ -43,17 +43,17 @@ pub const Struct = struct {
     pub fn Is(comptime T: type) bool {
         const TInfo = @typeInfo(T);
 
-        return TInfo == .Struct;
+        return TInfo == .@"struct";
     }
 
     // Return the name of the first field in holder having the type toFind
     pub fn FindFirstFieldFromType(comptime toFind: type, comptime holder: type) []const u8 {
         const TInfo = @typeInfo(holder);
 
-        if (TInfo != .Struct)
+        if (TInfo != .@"struct")
             @compileError("struct1 is not a struct");
 
-        for (TInfo.Struct.fields) |field| {
+        for (TInfo.@"struct".fields) |field| {
             if (field.type == toFind)
                 return field.name;
         }
@@ -67,7 +67,7 @@ pub const Struct = struct {
 
         const TInfo = @typeInfo(holder);
 
-        for (TInfo.Struct.fields) |field| {
+        for (TInfo.@"struct".fields) |field| {
             if (field.type == toFind)
                 return true;
         }
@@ -76,13 +76,13 @@ pub const Struct = struct {
     }
 
     pub fn Compare(struct1: anytype, struct2: anytype) bool {
-        if (@typeInfo(@TypeOf(struct1)) != .Struct)
+        if (@typeInfo(@TypeOf(struct1)) != .@"struct")
             @compileError("struct1 is not a struct");
 
         if (@TypeOf(struct1) != @TypeOf(struct2))
             @compileError("struct1 and struct2 must be of the same type");
 
-        const TypeInfo = @typeInfo(@TypeOf(struct1)).Struct;
+        const TypeInfo = @typeInfo(@TypeOf(struct1)).@"struct";
 
         inline for (TypeInfo.fields) |field| {
             if (!Self.Compare(@field(struct1, field.name), @field(struct2, field.name)))
@@ -98,11 +98,11 @@ pub const Struct = struct {
         const TInfo1 = @typeInfo(@TypeOf(tuple1));
         const TInfo2 = @typeInfo(@TypeOf(tuple2));
 
-        if (TInfo1 != .Struct or TInfo2 != .Struct)
+        if (TInfo1 != .@"struct" or TInfo2 != .@"struct")
             @compileError("tuple1 or tuple2 is not a struct");
 
-        const Struct1 = TInfo1.Struct;
-        const Struct2 = TInfo2.Struct;
+        const Struct1 = TInfo1.@"struct";
+        const Struct2 = TInfo2.@"struct";
 
         if (Struct1.is_tuple == false or Struct2.is_tuple == false)
             @compileError("tuple1 or tuple2 is not a tuple");
@@ -135,7 +135,7 @@ pub const Struct = struct {
 
 pub const Optional = struct {
     pub fn Compare(optional1: anytype, optional2: anytype) bool {
-        if (@typeInfo(@TypeOf(optional1)) != .Optional)
+        if (@typeInfo(@TypeOf(optional1)) != .optional)
             @compileError("struct1 is not a struct");
 
         if (@TypeOf(optional1) != @TypeOf(optional2))
@@ -157,7 +157,7 @@ pub const Tuple = struct {
     pub fn Is(comptime T: type) bool {
         const TInfo = @typeInfo(T);
 
-        return TInfo == .Struct and TInfo.Struct.is_tuple;
+        return TInfo == .@"struct" and TInfo.@"struct".is_tuple;
     }
 };
 
@@ -184,6 +184,27 @@ pub const Enum = struct {
         }
 
         return false;
+    }
+
+    pub fn MakeErrorSet(comptime T: type, comptime MaxSize: usize) type {
+        const TInfo = @typeInfo(T);
+
+        if (TInfo != .Enum)
+            @compileError("Not an enum");
+
+        var errors: [MaxSize]@import("std").builtin.Type.Error = undefined;
+
+        for (TInfo.Enum.fields, 0..) |field, i| {
+            errors[i].name = field.name;
+        }
+
+        const dummyErr = error{};
+
+        var errOut = @typeInfo(dummyErr);
+
+        errOut.ErrorSet = errors[0..TInfo.Enum.fields.len];
+
+        return @Type(errOut);
     }
 };
 

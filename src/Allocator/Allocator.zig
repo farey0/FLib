@@ -1,4 +1,4 @@
-//! FLib.Allocaor
+//! FLib.Allocator
 //! Author : farey0
 
 const std = @import("std");

@@ -1,4 +1,4 @@
-//! FLib.IO
+//! FLib.IO.File
 //! Author : farey0
 //!
 //! std's file functions but in upper camel case

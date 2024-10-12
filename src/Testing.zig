@@ -1,4 +1,4 @@
-//! FLib
+//! FLib.Testing
 //! Author : farey0
 //!
 //! std's testing function but in upper camel case

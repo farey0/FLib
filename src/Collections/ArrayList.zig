@@ -1,4 +1,4 @@
-//! FLib.Collections
+//! FLib.Collections.ArrayList
 //! Author : farey0
 //!
 //! Basic array structure
@@ -10,7 +10,7 @@ pub fn ArrayList(comptime T: type, comptime InitialSize: usize, comptime GrowthF
 
         const Self = @This();
 
-        const Memory = @import("../Memory/Memory.zig");
+        const Memory = @import("../Memory.zig");
         const Allocator = @import("../Allocator/Allocator.zig");
         const Interface = Allocator.Interface;
 
@@ -88,7 +88,7 @@ pub fn ArrayList(comptime T: type, comptime InitialSize: usize, comptime GrowthF
 
             self.currSize -= 1;
 
-            @import("../Memory/Memory.zig").Swap(T, self.data[index], self.data[self.currSize]);
+            @import("../Memory.zig").Swap(T, self.data[index], self.data[self.currSize]);
         }
 
         //                          ------------- Public Getters/Setters -------------

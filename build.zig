@@ -8,7 +8,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     const FLib = b.addModule("FLib", .{
-        .root_source_file = .{ .cwd_relative = "src/FLib.zig" },
+        .root_source_file = b.path("src/FLib.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -16,7 +16,7 @@ pub fn build(b: *std.Build) void {
     _ = FLib;
 
     const FKernelUnitTests = b.addTest(.{
-        .root_source_file = .{ .cwd_relative = "src/FLib.zig" },
+        .root_source_file = b.path("src/FLib.zig"),
         .target = target,
         .optimize = optimize,
     });

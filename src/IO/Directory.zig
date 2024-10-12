@@ -1,4 +1,4 @@
-//! FLib.IO
+//! FLib.IO.Directory
 //! Author : farey0
 //!
 //! std's directory functions but in upper camel case
