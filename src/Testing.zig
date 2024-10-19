@@ -10,3 +10,5 @@ const testing = @import("std").testing;
 //                          ----------------      Public      ----------------
 
 pub const Expect = testing.expect;
+
+pub const ReferenceAll = testing.refAllDecls;

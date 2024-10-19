@@ -15,12 +15,12 @@ pub fn build(b: *std.Build) void {
 
     _ = FLib;
 
-    const FKernelUnitTests = b.addTest(.{
+    const FLibUnitTests = b.addTest(.{
         .root_source_file = b.path("src/FLib.zig"),
         .target = target,
         .optimize = optimize,
     });
-    const UnitTestRun = b.addRunArtifact(FKernelUnitTests);
+    const UnitTestRun = b.addRunArtifact(FLibUnitTests);
 
     const TestStep = b.step("test", "Run unit tests");
     TestStep.dependOn(&UnitTestRun.step);
