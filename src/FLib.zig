@@ -9,6 +9,7 @@ pub const Console = @import("Console.zig");
 pub const Collections = @import("Collections/Collections.zig");
 pub const Mutex = @import("Mutex.zig");
 pub const Testing = @import("Testing.zig");
+pub const Json = @import("Json.zig");
 
 test {
     @import("std").testing.refAllDecls(@This());

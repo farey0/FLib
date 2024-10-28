@@ -11,6 +11,10 @@ const Self = @This();
 
 pub const Error = error{OutOfMemory};
 
+pub const PageAllocator: Self = .{
+    .stdAllocator = std.heap.page_allocator,
+};
+
 //                              ----------------      Members     ----------------
 
 stdAllocator: std.mem.Allocator = undefined,
@@ -42,4 +46,8 @@ pub fn FreeOne(self: Self, pointer: anytype) void {
 
 pub fn FromStd(stdAllocator: std.mem.Allocator) Self {
     return .{ .stdAllocator = stdAllocator };
+}
+
+pub fn ToStd(self: Self) std.mem.Allocator {
+    return self.stdAllocator;
 }

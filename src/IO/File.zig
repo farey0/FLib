@@ -18,13 +18,19 @@ stdFile: fs.File = undefined,
 pub const OpenError = fs.File.OpenError;
 pub const SeekError = fs.File.GetSeekPosError;
 pub const ReadError = fs.File.ReadError;
+pub const WriteError = fs.File.WriteError;
 
 pub const OpenOptions = fs.File.OpenFlags;
+pub const CreateOptions = fs.File.CreateFlags;
 
 //                              ----------------      Public      ----------------
 
 pub fn Open(path: []const u8, options: OpenOptions) OpenError!Self {
     return .{ .stdFile = try fs.openFileAbsolute(path, options) };
+}
+
+pub fn OpenRelative(path: []const u8, options: OpenOptions) OpenError!Self {
+    return .{ .stdFile = try fs.cwd().openFile(path, options) };
 }
 
 pub fn Close(self: *Self) void {
@@ -43,6 +49,10 @@ pub fn ReadAll(self: Self, allocator: Interface) (error{OutOfMemory} || ReadErro
     _ = try self.stdFile.readAll(out);
 
     return out;
+}
+
+pub fn WriteAll(self: Self, data: []const u8) WriteError!void {
+    try self.stdFile.writeAll(data);
 }
 
 //                              ---------------- Getters/Setters  ----------------
